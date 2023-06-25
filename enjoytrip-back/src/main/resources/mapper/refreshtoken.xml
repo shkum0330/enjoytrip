@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.jwt.RefreshTokenMapper">
+    <resultMap type="refreshToken" id="refreshToken">
+        <result column="refresh_token_id" property="refreshTokenId"/>
+        <result column="refresh_token" property="refreshToken"/>
+        <result column="user_id" property="userId"/>
+    </resultMap>
+
+    <select id="findByUserId" parameterType="String" resultType="refreshToken">
+        select refresh_token_id, refresh_token, user_id
+        from refresh_token
+        where user_id=#{userId}
+    </select>
+    <insert id="save" parameterType="refreshToken" >
+        insert into refresh_token(refresh_token,user_id)
+        values(#{refreshToken},#{userId})
+    </insert>
+    <update id="updateRefreshToken" parameterType="refreshToken">
+        update refresh_token
+        set refresh_token = #{refreshToken}
+        where user_id = #{userId}
+    </update>
+    <delete id="deleteRefreshToken" parameterType="String">
+        delete from refresh_token
+        where user_id = #{userId}
+    </delete>
+</mapper>

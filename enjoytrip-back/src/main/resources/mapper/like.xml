@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.board.like.repository.mybatis.LikeMapper">
+    <resultMap type="HotPlaceLikeDto" id="hotPlaceLike">
+        <result column="id" property="id"/>
+        <result column="article_no" property="articleNo"/>
+        <result column="user_id" property="userId"/>
+        <result column="object_type" property="objectType"/>
+    </resultMap>
+    <resultMap type="HotPlaceCommentLikeDto" id="hotPlaceCommentLike">
+        <result column="id" property="id"/>
+        <result column="comment_id" property="commentId"/>
+        <result column="user_id" property="userId"/>
+        <result column="object_type" property="objectType"/>
+    </resultMap>
+<!--    게시물-->
+<!--좋아요 정보 찾기-->
+    <select id="findByMemberAndArticle" resultMap="hotPlaceLike">
+        select user_id,article_no
+        from hotPlaceBoard
+        where article_no = #{articleNo} and user_id=#{userId}
+    </select>
+    <!--    좋아요 정보 저장-->
+    <insert id="saveArticleLike" parameterType="HotPlaceLikeDto">
+        insert into hotPlaceBoard (article_no, user_id, object_type)
+        values (#{articleNo}, #{userId}, 0)
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+    </insert>
+    <!--    좋아요 정보 삭제-->
+    <delete id="deleteArticleLike" parameterType="HotPlaceLikeDto">
+        delete from hotPlaceBoard
+        where article_no = #{articleNo} and user_id=#{userId}
+    </delete>
+
+<!--    댓글-->
+    <!--좋아요 정보 찾기-->
+    <select id="findByMemberAndComment" resultMap="hotPlaceCommentLike">
+        select user_id,comment_id
+        from `like`
+        where comment_id = #{commentId} and user_id=#{userId}
+    </select>
+<!--    좋아요 정보 저장-->
+    <insert id="save" parameterType="HotPlaceCommentLikeDto">
+        insert into `like` (comment_id, user_id, object_type)
+        values (#{commentId}, #{userId}, 1)
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+    </insert>
+    <!--    좋아요 정보 삭제-->
+    <delete id="delete" parameterType="HotPlaceCommentLikeDto">
+        delete from `like`
+        where comment_id = #{commentId} and user_id=#{userId}
+    </delete>
+</mapper>

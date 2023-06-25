@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.members.repository.mybatis.MembersMapper">
+
+    <resultMap type="membersDto" id="members">
+        <result column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="user_password" property="userPassword"/>
+        <result column="email_id" property="emailId"/>
+        <result column="email_domain" property="emailDomain"/>
+        <result column="join_date" property="joinDate"/>
+        <result column="role" property="role"/>
+    </resultMap>
+
+    <select id="login" parameterType="membersDto" resultMap="members">
+        select user_id, user_name,role
+        from members
+        where user_id=#{userId} and user_password=#{userPassword}
+    </select>
+
+    <insert id="join" parameterType="membersDto" >
+        insert into members(user_id,user_name,user_password,email_id,email_domain,join_date,role)
+        values(#{userId},#{userName},#{userPassword},#{emailId},#{emailDomain},now(),"USER")
+    </insert>
+
+    <select id="listMembers"  resultMap="members">
+        select user_id,user_name,email_id,email_domain, date_format(join_date,'%Y-%m-%d'),role
+        from members
+        where user_id not like '%admin%'
+        order by user_id
+    </select>
+
+    <select id="findById" parameterType="String" resultMap="members">
+        select user_id,user_name,user_password,email_id,email_domain, date_format(join_date,'%Y-%m-%d') as join_date,role
+        from members
+        where user_id = #{userId}
+    </select>
+
+    <update id="updateMember" parameterType="membersDto">
+        update members
+        set user_name = #{updateParam.userName},user_password = #{updateParam.userPassword}
+          ,email_id = #{updateParam.emailId},email_domain = #{updateParam.emailDomain}
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteMember" parameterType="String">
+        delete from members
+        where user_id = #{userId}
+    </delete>
+</mapper>

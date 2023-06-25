@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.board.hotPlaceBoard.repository.mybatis.CommentMapper">
+
+<!--    private int commentId;-->
+<!--    private int articleNo;-->
+<!--    private String userId;-->
+<!--    private String userName;-->
+<!--    private String content;-->
+<!--    private int likes;-->
+<!--    private String registerTime;-->
+
+    <resultMap type="CommentDto" id="hotPlaceComment">
+        <result column="comment_id" property="commentId"/>
+        <result column="article_no" property="articleNo"/>
+        <result column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="content" property="content"/>
+        <result column="likes" property="likes"/>
+        <result column="register_time" property="registerTime"/>
+    </resultMap>
+
+    <insert id="writeComment" parameterType="CommentDto">
+        insert into `comment` (article_no,user_id, content, likes, register_time)
+        values (#{articleNo}, #{userId}, #{content}, 0, now())
+        <selectKey resultType="int" keyProperty="commentId" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+    </insert>
+
+    <select id="findByCommentId"  resultMap="hotPlaceComment">
+        select comment_id,user_id,content,likes,register_time
+        from `comment`
+        where comment_id = #{commentId}
+    </select>
+
+    <select id="findByArticleNo"  resultMap="hotPlaceComment">
+        select comment_id,user_id,content,register_time ,likes
+        from `comment`
+        where article_no = #{articleNo}
+    </select>
+
+    <update id="modifyComment" parameterType="CommentDto">
+        update `comment`
+        set content = #{comment.content}
+        where comment_id = #{commentId}
+    </update>
+
+    <delete id="deleteComment" parameterType="int">
+        delete from `comment`
+        where comment_id = #{commentId}
+    </delete>
+
+    <update id="likeComment" parameterType="int">
+        update `comment`
+        set likes = likes + 1
+        where comment_id = #{commentId}
+    </update>
+    <update id="unlikeComment" parameterType="int">
+        update `comment`
+        set likes = likes - 1
+        where comment_id = #{commentId}
+    </update>
+</mapper>
